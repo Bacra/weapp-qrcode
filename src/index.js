@@ -70,11 +70,22 @@ function drawQrcode (options) {
     var tileW = options.width / qrcode.getModuleCount()
     var tileH = options.height / qrcode.getModuleCount()
 
+    var setFillStyle
+    if (typeof ctx.setFillStyle === 'function') {
+      setFillStyle = function (style) {
+        ctx.setFillStyle(style)
+      }
+    } else {
+      setFillStyle = function (style) {
+        ctx.fillStyle = style
+      }
+    }
+
     // draw in the canvas
     for (var row = 0; row < qrcode.getModuleCount(); row++) {
       for (var col = 0; col < qrcode.getModuleCount(); col++) {
         var style = qrcode.isDark(row, col) ? options.foreground : options.background
-        ctx.setFillStyle(style)
+        setFillStyle(style)
         var w = (Math.ceil((col + 1) * tileW) - Math.floor(col * tileW))
         var h = (Math.ceil((row + 1) * tileW) - Math.floor(row * tileW))
         ctx.fillRect(Math.round(col * tileW) + options.x, Math.round(row * tileH) + options.y, w, h)
